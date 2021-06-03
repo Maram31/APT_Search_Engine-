@@ -57,7 +57,7 @@ public class Main {
     
     public static void readSeeds(Queue<String> seedsList) {
         try {
-            File mySeeds = new File("C:\\Users\\Maram\\Documents\\GitHub\\APT_Search_Engine-\\Crawler\\src\\main\\java\\seeds.txt");
+            File mySeeds = new File("C:\\Users\\Maram\\Documents\\GitHub\\APT_Search_Engine-\\Crawler_Indexer\\src\\main\\java\\seeds.txt");
             Scanner myReader = new Scanner(mySeeds);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();

@@ -1,0 +1,7 @@
+https://github.com/rana1afifi/Search-Engine/tree/master/src/Engine
+
+https://learnmoderncpp.com/2020/12/16/generating-c-programs-with-flex-and-bison-1/
+
+https://github.com/OmarBazaraa/MppCompiler
+
+https://github.com/Abdallah-Sobehy/compiler
