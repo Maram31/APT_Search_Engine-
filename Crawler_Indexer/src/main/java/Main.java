@@ -32,8 +32,9 @@ public class Main {
     static boolean crawlerFinished = false;
     /**
      * @param args the command line arguments
+     * @throws IOException 
      */
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, IOException {
         Thread crawling = new Thread(new CrawlerController());
       
         // thread for indexer
@@ -45,6 +46,8 @@ public class Main {
         crawling.join();
         // indexer joins
         System.out.println("Crawling finished");
+        
+        Indexer.indexer(visitedUrls);
 
         if (!CrawlerController.isInterrupted) {
         }
@@ -58,7 +61,7 @@ public class Main {
     
     public static void readSeeds(Queue<String> seedsList) {
         try {
-            File mySeeds = new File("C:\\Users\\Maram\\Documents\\GitHub\\APT_Search_Engine-\\Crawler_Indexer\\src\\main\\java\\seeds.txt");
+            File mySeeds = new File("seeds.txt");
             Scanner myReader = new Scanner(mySeeds);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
