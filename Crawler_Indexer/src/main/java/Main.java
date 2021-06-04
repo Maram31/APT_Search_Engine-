@@ -28,7 +28,7 @@ public class Main {
     
     protected static Integer visitedUrlsCount = 0;
 
-    final static int stoppingCriteria = 2000;
+    final static int stoppingCriteria = 5000;
     static boolean crawlerFinished = false;
     /**
      * @param args the command line arguments
@@ -44,7 +44,8 @@ public class Main {
               
         crawling.join();
         // indexer joins
-        
+        System.out.println("Crawling finished");
+
         if (!CrawlerController.isInterrupted) {
         }
 

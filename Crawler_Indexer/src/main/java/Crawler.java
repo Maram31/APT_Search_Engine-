@@ -34,6 +34,7 @@ public class Crawler implements Runnable {
     protected String getNextUrl() {                               // get next url to crawl from seed list   
         synchronized(Main.seedsList) {
             if (Main.seedsList.isEmpty()) {
+                System.out.println(Thread.currentThread().getName() + "Seedlist is empty");
                 return null;                                      // no more seeds in list   
             }
             else {
@@ -91,8 +92,10 @@ public class Crawler implements Runnable {
         boolean allowedByRobot = false;
         
         while(true) {
-            if(Main.visitedUrls.size() > Main.stoppingCriteria)
+            if(Main.visitedUrls.size() > Main.stoppingCriteria) {
+                System.out.println("Reached stopping criteria");
                 break;
+            }
             
             url = null;
             String nextUrl;
@@ -102,7 +105,7 @@ public class Crawler implements Runnable {
             //System.out.println(Thread.currentThread().getName() +" will crawl next url: " + nextUrl);
 
             if(nextUrl == null)
-                continue;
+                break;
               
             synchronized(Main.visitedUrls) {
                 url = Main.visitedUrls.contains(nextUrl) ? null : nextUrl;
@@ -219,9 +222,9 @@ public class Crawler implements Runnable {
                     System.out.println(Thread.currentThread().getName() + " extracted url: " + extractedURL);
                     //Main.visitedUrls.forEach(System.out::println);
                     Main.seedsList.add(extractedURL);   
-                    //Main.visitedUrls.add(extractedURL);   
-                    //Main.visitedUrls.size();
-                    //System.out.println(Main.visitedUrls.size());
+                    Main.visitedUrls.add(extractedURL);   
+                    //.visitedUrls.size();
+                    System.out.println(Main.visitedUrls.size());
                 }
             }
         }
@@ -241,7 +244,7 @@ public class Crawler implements Runnable {
         
             //System.out.println("Document title:" + t);
 
-            System.out.println("Document content:" + compact);
+            //System.out.println("Document content:" + compact);
             
             if(!connection.response().contentType().contains("text/html"))
             {

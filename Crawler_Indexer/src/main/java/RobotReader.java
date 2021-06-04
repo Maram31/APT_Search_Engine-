@@ -28,7 +28,7 @@ public class RobotReader {
         URL urlAddress = new URL(url);
         domain = urlAddress.getProtocol() + "://"  + urlAddress.getHost();
         String robotFileURL = domain + "/robots.txt";
-        System.out.println("Robot file URL is: "+ robotFileURL);
+        //System.out.println("Robot file URL is: "+ robotFileURL);
         return new URL(robotFileURL);          
     }
     
@@ -57,14 +57,14 @@ public class RobotReader {
 
         if (!inAllowed && !inDisallowed)   //checking that robot file wasn't downloaded before
         {
-            System.out.println("Robot url host: " + Roboturl.getHost());
+            //System.out.println("Robot url host: " + Roboturl.getHost());
             
             //System.out.println("Hash map contains allowed url: " + inAllowed);
             //System.out.println("Hash map contains disallowed url: " + inDisallowed);
 
-            System.out.println(Thread.currentThread().getName() + ": Robot file wasn't visited before!");
-            System.out.println("Allowed: " + allowedUrls.keySet());
-            System.out.println("Disallowed: " + disallowedUrls.keySet());
+            //System.out.println(Thread.currentThread().getName() + ": Robot file wasn't visited before!");
+            //System.out.println("Allowed: " + allowedUrls.keySet());
+            //System.out.println("Disallowed: " + disallowedUrls.keySet());
             
             if (addtoRobotList(Roboturl)) {
             //    System.out.println("Added to robot list");

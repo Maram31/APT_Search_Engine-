@@ -53,17 +53,17 @@ public class CrawlerController  implements Runnable {
             crawlerThreads[i].start();
         }
 
-        try {     
-            while (!reader.ready()) {           // as long as the enter key wasn't pressed
+        //try {     
+            //while (!reader.ready()) {           // as long as the enter key wasn't pressed
 
                 //if(Main.visitedUrls >= Main.stoppingCriteria) {
                   //  break;
                 //}
-            }
+            //}
          
-        } catch (IOException err) {
-            System.out.println("Error");
-        } finally {
+        //} catch (IOException err) {
+            //System.out.println("Error");
+        //} finally {
             for (int i = 0; i < numberofThreads; i++) {
                 try {
                     crawlerThreads[i].join();
@@ -73,6 +73,6 @@ public class CrawlerController  implements Runnable {
             }
             Main.crawlerFinished = true;
 
-        }
+        //}
     }         
 }
