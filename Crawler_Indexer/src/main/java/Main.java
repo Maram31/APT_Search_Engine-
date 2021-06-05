@@ -48,8 +48,9 @@ public class Main {
             readSeeds(seedsList);
         }
       
-        System.out.println(visitedUrls);
-        System.out.println(seedsList);
+        //System.out.println(visitedUrls);
+        //System.out.println(seedsList);
+        System.out.println(compactString);
         
         
         crawling.start();
@@ -99,7 +100,7 @@ public class Main {
                 //Converting Queue to Array
                 String[] array = null;
                 array = seedsList.toArray(new String[seedsList.size()]);
-                System.out.println(Arrays.toString(array));
+                //System.out.println(Arrays.toString(array));
                 String newLine = System.getProperty("line.separator");
 
                 //Write Content
@@ -127,7 +128,7 @@ public class Main {
                 //Converting Set to Array
                 String[] array = null;
                 array = visitedUrls.toArray(new String[visitedUrls.size()]);
-                System.out.println(Arrays.toString(array));
+                //System.out.println(Arrays.toString(array));
                 String newLine = System.getProperty("line.separator");
 
                 //Write Content
@@ -139,6 +140,36 @@ public class Main {
             } catch (IOException e) {
                 e.printStackTrace();
             }  
+            
+            //Saving compact string list
+            File compactStringFile = new File("./compactString.txt");     
+            try {
+                /*
+                if (visitedUrlsFile.createNewFile()) {
+                    System.out.println("Visited urls file is created!");
+                } else {
+                    System.out.println("Visited urls file already exists.");
+                }
+                */
+                System.out.println(compactString);
+
+                //Converting Set to Array
+                String[] array = null;
+                array = compactString.toArray(new String[compactString.size()]);
+                System.out.println(Arrays.toString(array));
+                String newLine = System.getProperty("line.separator");
+
+                //Write Content
+                FileWriter writer = new FileWriter(compactStringFile);
+                for(int i = 0; i < array.length; i++) {
+                    writer.write(array[i]+ newLine);               
+                }        
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }  
+                        
+            
 
             File isInterruptedFile = new File("./state.txt");
 
@@ -165,7 +196,6 @@ public class Main {
     }
 
     public static void loadState()  {  
-
         try {
             //Loading seeds list
             File seedsListFile = new File("./seedsList.txt");
@@ -179,7 +209,7 @@ public class Main {
                 myReader.close(); 
             }
         } catch(FileNotFoundException e) {
-            System.out.println("An error occurred while loading seeds from file!");
+            System.out.println("An error occurred while loading previous state for seeds from file!");
             e.printStackTrace();
         }   
 
@@ -196,9 +226,26 @@ public class Main {
                 }
                 myReader.close(); }
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred while loading visitedUrls from file!");
+            System.out.println("An error occurred while loading previous state for visited Urls from file!");
             e.printStackTrace(); 
         } 
+        
+        try {
+            //Loading compact strings
+            File compactStringFile = new File("./compactString.txt");
+            if(compactStringFile.exists()) {
+                Scanner myReader = new Scanner(compactStringFile);
+
+                while (myReader.hasNextLine()) {
+                    String data = myReader.nextLine();
+                    compactString.add(data);
+                }
+                myReader.close(); }
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred while loading previous state for compact strings from file!");
+            e.printStackTrace(); 
+        }        
+        
     }
     
     public static void checkPreviousState()  {  

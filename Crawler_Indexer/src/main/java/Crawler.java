@@ -111,7 +111,7 @@ public class Crawler implements Runnable {
                 //System.out.println(Thread.currentThread().getName() + ": This url was visited before " + nextUrl);
             }
        
-            if(Main.visitedUrls.size() >= 500*stateCounter && stateCounter < 10) {
+            if(Main.visitedUrls.size() == 500 * stateCounter && stateCounter != 10) {
                 if(Thread.currentThread().getName().equals("C0")) {
                     //System.out.println("Count of visited urls: " + Main.visitedUrls.size());
 
@@ -203,8 +203,8 @@ public class Crawler implements Runnable {
             String s = htmlDocument.body().text();
             String t = htmlDocument.title();
             
-            String compact = createCompactString(s);           
-        
+            //String compact = createCompactString(s);           
+            String compact = firstLetterWord(s);
             //System.out.println("Document title:" + t);
 
             //System.out.println("Document content:" + compact);
@@ -224,13 +224,15 @@ public class Crawler implements Runnable {
                     }
                     else {
                         Main.compactString.add(compact);   
+                        System.out.println("Compact string list: " + Main.compactString);
+
                     }
                 }
                                        
                 synchronized(Main.visitedUrls){
                     Main.visitedUrls.add(url);  
                     //Main.visitedUrlsCount++;
-                    System.out.println(Main.visitedUrls.size());
+                    System.out.println("Visited urls: " + Main.visitedUrls.size());
                 }
             }
             
@@ -263,7 +265,32 @@ public class Crawler implements Runnable {
         return compactString;
     }
     
-
+    static String firstLetterWord(String str)
+    {
+        String result = "";
+ 
+        // Traverse the string.
+        boolean v = true;
+        for (int i = 0; i < str.length(); i++)
+        {
+            // If it is space, set v as true.
+            if (str.charAt(i) == ' ')
+            {
+                v = true;
+            }
+             
+            // Else check if v is true or not.
+            // If true, copy character in output
+            // string and set v as false.
+            else if (str.charAt(i) != ' ' && v == true)
+            {
+                result += (str.charAt(i));
+                v = false;
+            }
+        }
+ 
+        return result;
+    }
 
     
     private String downloadPage(URL pageUrl) {
