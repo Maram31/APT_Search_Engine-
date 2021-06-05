@@ -39,7 +39,6 @@ public class CrawlerController  implements Runnable {
 
         Thread[] crawlerThreads = new Thread[numberofThreads];
         
-        System.out.println("You can press enter to stop the crawling process");
         for (int i = 0; i < numberofThreads; i++) {
             crawlerThreads[i] = new Thread(new Crawler());
             //System.out.println("Created a crawler thread");

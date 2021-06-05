@@ -113,7 +113,7 @@ public class Crawler implements Runnable {
        
             if(Main.visitedUrls.size() >= 500*stateCounter && stateCounter < 10) {
                 if(Thread.currentThread().getName().equals("C0")) {
-                    System.out.println("Count of visited urls: " + Main.visitedUrls.size());
+                    //System.out.println("Count of visited urls: " + Main.visitedUrls.size());
 
                     System.out.println(Thread.currentThread().getName() + ": Saving state now ");
 
@@ -183,7 +183,7 @@ public class Crawler implements Runnable {
                 }
                                         
                 if(!Main.seedsList.contains(extractedURL) && !Main.visitedUrls.contains(extractedURL)) {
-                    //System.out.println(Thread.currentThread().getName() + " extracted url: " + extractedURL);
+                    System.out.println(Thread.currentThread().getName() + " extracted url: " + extractedURL);
                     //Main.visitedUrls.forEach(System.out::println);
                     Main.seedsList.add(extractedURL);   
                     //Main.visitedUrls.add(extractedURL);   
