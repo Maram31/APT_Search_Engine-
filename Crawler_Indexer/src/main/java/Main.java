@@ -18,53 +18,33 @@ import org.jsoup.nodes.Document;
 
 public class Main {
     protected static Queue<String> seedsList = new LinkedList<>();
-    //protected static Queue<String> HTMLdocuments = new LinkedList<>();
-
-    protected static Set<String> visitedUrls = new HashSet<String>();
-    
+    protected static Set<String> visitedUrls = new HashSet<String>(); 
     protected static Set<String> compactString = new HashSet<String>();
-    
-    //protected static Integer visitedUrlsCount = 0;
-
     final static int stoppingCriteria = 5000;
-    
-    static boolean crawlerFinished = false;
-    
+    static boolean crawlerFinished = false; 
     static int isInterrupted = 0;
     
     /**
      * @param args the command line arguments
      * @throws IOException 
      */
-    public static void main(String[] args) throws InterruptedException, IOException {
-        Thread crawling = new Thread(new CrawlerController());
- 
-        
+    
+    public static void main(String[] args) throws InterruptedException, IOException {        
+        CrawlerController controller = new CrawlerController();
         checkPreviousState();
+        
         if(isInterrupted == 1) {
+            System.out.println("Loading previous state...");
             loadState();
         }
         else {
             readSeeds(seedsList);
         }
-      
-        //System.out.println(visitedUrls);
-        //System.out.println(seedsList);
-        System.out.println(compactString);
-        
-        
-        crawling.start();
-              
-        crawling.join();
+        controller.run();
         
         System.out.println("Crawling finished");
-         
-       
+          
         Indexer.indexer(visitedUrls);
-
-        for (String item: seedsList) {
-            System.out.println(item);
-        }
     }
     
     
@@ -90,17 +70,9 @@ public class Main {
         if(state == 1) {
             File seedListFile = new File("./seedsList.txt");     
             try {
-                /*
-                if (seedListFile.createNewFile()) {
-                    System.out.println("Seeds list file is created!");
-                } else {
-                    System.out.println("Seeds list file already exists.");
-                }
-                */
                 //Converting Queue to Array
                 String[] array = null;
                 array = seedsList.toArray(new String[seedsList.size()]);
-                //System.out.println(Arrays.toString(array));
                 String newLine = System.getProperty("line.separator");
 
                 //Write Content
@@ -116,19 +88,9 @@ public class Main {
             //Saving visited urls list
             File visitedUrlsFile = new File("./visitedUrls.txt");     
             try {
-                /*
-                if (visitedUrlsFile.createNewFile()) {
-                    System.out.println("Visited urls file is created!");
-                } else {
-                    System.out.println("Visited urls file already exists.");
-                }
-                */
-                System.out.println(visitedUrls);
-
                 //Converting Set to Array
                 String[] array = null;
                 array = visitedUrls.toArray(new String[visitedUrls.size()]);
-                //System.out.println(Arrays.toString(array));
                 String newLine = System.getProperty("line.separator");
 
                 //Write Content
@@ -144,19 +106,9 @@ public class Main {
             //Saving compact string list
             File compactStringFile = new File("./compactString.txt");     
             try {
-                /*
-                if (visitedUrlsFile.createNewFile()) {
-                    System.out.println("Visited urls file is created!");
-                } else {
-                    System.out.println("Visited urls file already exists.");
-                }
-                */
-                System.out.println(compactString);
-
                 //Converting Set to Array
                 String[] array = null;
                 array = compactString.toArray(new String[compactString.size()]);
-                System.out.println(Arrays.toString(array));
                 String newLine = System.getProperty("line.separator");
 
                 //Write Content
@@ -168,11 +120,9 @@ public class Main {
             } catch (IOException e) {
                 e.printStackTrace();
             }  
-                        
             
-
+            //Saving state                 
             File isInterruptedFile = new File("./state.txt");
-
             try {    
                 FileWriter writer = new FileWriter(isInterruptedFile);
                 writer.write("1");               
@@ -181,6 +131,7 @@ public class Main {
                 e.printStackTrace();
             }
         }
+        
         if(state == 0) {
             File isInterruptedFile = new File("./state.txt");
             try {    
@@ -191,11 +142,10 @@ public class Main {
                 e.printStackTrace();
             }        
         }
-
-  
     }
 
-    public static void loadState()  {  
+    
+    public static void loadState() {  
         try {
             //Loading seeds list
             File seedsListFile = new File("./seedsList.txt");
@@ -244,9 +194,9 @@ public class Main {
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred while loading previous state for compact strings from file!");
             e.printStackTrace(); 
-        }        
-        
+        }             
     }
+
     
     public static void checkPreviousState()  {  
         try {

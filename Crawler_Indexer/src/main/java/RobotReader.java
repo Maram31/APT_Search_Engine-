@@ -20,8 +20,7 @@ import java.net.HttpURLConnection;
 public class RobotReader {
     static protected HashMap<String, ArrayList<String>> allowedUrls = new HashMap<String, ArrayList<String>>();
     static protected HashMap<String, ArrayList<String>> disallowedUrls = new HashMap<String, ArrayList<String>>();
-
-    
+   
     protected URL getRobotFileURL(String url) throws MalformedURLException{  
         String domain = null;
         URL urlAddress = new URL(url);
@@ -54,34 +53,27 @@ public class RobotReader {
         boolean inAllowed = allowedUrls.containsKey(Roboturl.getHost());
         boolean inDisallowed = disallowedUrls.containsKey(Roboturl.getHost());
 
-        if (!inAllowed && !inDisallowed)   //checking that robot file wasn't downloaded before
-        {
-            //System.out.println(Thread.currentThread().getName() + " Allowed: " + allowedUrls.keys());
-            //System.out.println(Thread.currentThread().getName() + " Disallowed: " + disallowedUrls.keys());
-  
-            if (addtoRobotList(Roboturl)) {
-                System.out.println("Added to robot list");
-                //System.out.println("Allowed: " + allowedUrls);
-                //System.out.println("Disallowed: " + disallowedUrls);
+        if (!inAllowed && !inDisallowed) {       //checking that robot file wasn't downloaded before
+        
+
+            if (addtoRobotList(Roboturl)) {     //if it wasn't, download it
                 return true;                         
             }
         }
  
         String file = checkURL.getFile();           // gets the directory 
-        //System.out.println("String file: "+ file);
+        
         try {
             for (String s : allowedUrls.get(Roboturl.getHost())) {
-                //System.out.println("String allowed: " + s);
                 if ((file.compareToIgnoreCase(s) == 0)) {
-                    System.out.println(Thread.currentThread().getName() + ": Visiting URL " + url + " is allowed!");
+                    //System.out.println(Thread.currentThread().getName() + ": Visiting URL " + url + " is allowed!");
                     return true;
                 }
             }
 
             for (String s : disallowedUrls.get(Roboturl.getHost())) {
-                //System.out.println("String disallowed: " + s);
                 if (file.startsWith(s)) {
-                    System.out.println(Thread.currentThread().getName() + ": Visiting URL " + url + " is disallowed!");
+                    //System.out.println(Thread.currentThread().getName() + ": Visiting URL " + url + " is disallowed!");
                     return false;
                 }
             }
@@ -92,17 +84,15 @@ public class RobotReader {
     }
     
 
-    protected boolean addtoRobotList(URL urlRobot) 
-    {
+    protected boolean addtoRobotList(URL urlRobot) {
         HttpURLConnection connect;
-        //System.out.println("Adding to robot");        
         
         try {
             connect = (HttpURLConnection) urlRobot.openConnection();
             connect.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" + "(KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36");
-            //System.out.println("Robot connected");
+
         } catch (IOException e) {
-            System.out.println(Thread.currentThread().getName() + ": Connection error when retrieving robot file!");
+            //System.out.println(Thread.currentThread().getName() + ": Connection error when retrieving robot file!");
             return false;
         }
 
@@ -113,9 +103,7 @@ public class RobotReader {
             ArrayList<String> disallowed = new ArrayList<String>();
             ArrayList<String> allowed = new ArrayList<String>();
             
-
-            while ((robotText = reader.readLine()) != null)             //loop until we reach the desired user agent
-            {
+            while ((robotText = reader.readLine()) != null) {            //loop until we reach the desired user agent       
                 if (robotText.startsWith("User-agent: *")) {
                     break;
                 }
@@ -135,15 +123,10 @@ public class RobotReader {
                     if (commentIndex != - 1) {
                         path = path.substring(0, commentIndex);
                         System.out.println(path);
-                    }
-        
+                    }       
                     path = path.trim();                                 // remove any trailing or leading spaces from path
-
-                    //System.out.println(path);
-                    
-                    if (path.isEmpty() || path == null)                 // if empty then it allows access to all content
-                    {
-                        System.out.println(Thread.currentThread().getName() + " finds that everything is allowed in url: " + urlRobot);
+                  
+                    if (path.isEmpty() || path == null) {               // if empty then it allows access to all content               
                         return true;
                     }
                     
@@ -163,18 +146,15 @@ public class RobotReader {
                 }
             }
             
-            reader.close(); //Closes buffer and releases memory resources
+            reader.close();                                                 // closes buffer and releases memory resources
             allowedUrls.put(urlRobot.getHost(), allowed);
             disallowedUrls.put(urlRobot.getHost(), disallowed);
-            
-            //System.out.println("Allowed:" + RobotReader.allowedUrls);
-            //System.out.println("Disallowed:" + RobotReader.disallowedUrls);            
             
             allowed = null;
             disallowed = null;
             
-        } catch (IOException ex) {
-            System.out.println(Thread.currentThread().getName() + " couldn't find robot file for " + urlRobot); /* Assume crawling is allowed since robot file doesn't exist. */ 
+        } catch (IOException ex) {                                          // assume crawling is allowed since robot file doesn't exist 
+            //System.out.println(Thread.currentThread().getName() + " couldn't find robot file for " + urlRobot); 
             return true;
         }
         return false;

@@ -16,9 +16,8 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import org.json.*;
 
-public class CrawlerController  implements Runnable {
+public class CrawlerController {
     int numberofThreads;
-
     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     String line;
 
@@ -27,7 +26,6 @@ public class CrawlerController  implements Runnable {
     }; 
   
   
-    @Override
     public void run() {
         Thread.currentThread().setName("CrawlerController");
         System.out.println("Please enter the number of crawler threads: ");
@@ -41,7 +39,6 @@ public class CrawlerController  implements Runnable {
         
         for (int i = 0; i < numberofThreads; i++) {
             crawlerThreads[i] = new Thread(new Crawler());
-            //System.out.println("Created a crawler thread");
   
             crawlerThreads[i].setName("C" + i);
             crawlerThreads[i].start();
@@ -55,6 +52,7 @@ public class CrawlerController  implements Runnable {
                 Logger.getLogger(CrawlerController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
         Main.crawlerFinished = true;
         Main.isInterrupted = 0;
         Main.saveState(0);
