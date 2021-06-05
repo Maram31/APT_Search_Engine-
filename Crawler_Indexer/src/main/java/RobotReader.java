@@ -6,7 +6,6 @@
 
 /**
  *
- * @author Maram
  */
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -57,19 +56,13 @@ public class RobotReader {
 
         if (!inAllowed && !inDisallowed)   //checking that robot file wasn't downloaded before
         {
-            //System.out.println("Robot url host: " + Roboturl.getHost());
-            
-            //System.out.println("Hash map contains allowed url: " + inAllowed);
-            //System.out.println("Hash map contains disallowed url: " + inDisallowed);
-
-            //System.out.println(Thread.currentThread().getName() + ": Robot file wasn't visited before!");
-            //System.out.println("Allowed: " + allowedUrls.keySet());
-            //System.out.println("Disallowed: " + disallowedUrls.keySet());
-            
+            //System.out.println(Thread.currentThread().getName() + " Allowed: " + allowedUrls.keys());
+            //System.out.println(Thread.currentThread().getName() + " Disallowed: " + disallowedUrls.keys());
+  
             if (addtoRobotList(Roboturl)) {
-            //    System.out.println("Added to robot list");
-            //    System.out.println("Allowed: " + allowedUrls);
-            //    System.out.println("Disallowed: " + disallowedUrls);
+                System.out.println("Added to robot list");
+                //System.out.println("Allowed: " + allowedUrls);
+                //System.out.println("Disallowed: " + disallowedUrls);
                 return true;                         
             }
         }
