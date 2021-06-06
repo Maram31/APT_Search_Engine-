@@ -27,14 +27,15 @@ public class Crawler implements Runnable {
 
     static RobotReader readRobotFiles = new RobotReader();        //read robot files
 
-
+    static int stateCounter = 1; 
+    
     public Crawler() {
     }
     
     protected String getNextUrl() {                               // get next url to crawl from seed list   
         synchronized(Main.seedsList) {
             if (Main.seedsList.isEmpty()) {
-                System.out.println(Thread.currentThread().getName() + "Seedlist is empty");
+                System.out.println(Thread.currentThread().getName() + ": Seedlist is empty!");
                 return null;                                      // no more seeds in list   
             }
             else {
@@ -42,7 +43,8 @@ public class Crawler implements Runnable {
             }
         }
     }
-    
+ 
+/*   
     protected boolean addHTMLDocument(Document HTMLDocument) {
         boolean isAdded;
         synchronized(Main.HTMLdocuments) {
@@ -54,31 +56,10 @@ public class Crawler implements Runnable {
         }
         else
             return false;
-    }    
-    /*
-    protected boolean getHTMLDocument(String url) {
-        Document HTMLDocument = null;
-        try {
-            Connection connection = Jsoup.connect(url).userAgent(UserAgent);
-            Connection.Response r = connection.url(url).timeout(10000).execute();
-            
-            if (!r.contentType().contains("text/html")) {
-                return false;
-            }
-            HTMLDocument = connection.get();
-        } catch (HttpStatusException e) {
-            Main.restrictedSites.add(url);
-            System.out.println("Restricted url: " + url);
-
-            return false;
-        } catch (IOException | IllegalArgumentException | NullPointerException ex) {
-            return false;
-        }
- 
-        return (addHTMLDocument(HTMLDocument));
-    }
+    } 
+*/  
     
-   */
+
 
     @Override
     public void run() {
@@ -86,81 +67,64 @@ public class Crawler implements Runnable {
         crawl();
     }
     
-    public void crawl() {
+    public void crawl() {       
         String url;
-        //boolean retrieved = false;
-        boolean allowedByRobot = false;
         
         while(true) {
             if(Main.visitedUrls.size() > Main.stoppingCriteria) {
-                System.out.println("Reached stopping criteria");
+                System.out.println("Reached stopping criteria!");
+                
                 break;
             }
             
-            url = null;
             String nextUrl;
             //synchronized(Main.visitedUrls) {
-                nextUrl = getNextUrl();
+            nextUrl = getNextUrl();
             //}
             //System.out.println(Thread.currentThread().getName() +" will crawl next url: " + nextUrl);
 
-            if(nextUrl == null)
+            if(nextUrl == null) {
+                System.out.println(Thread.currentThread().getName() + ": No more links to crawl!");
                 break;
+            }
               
+            url = null;
+         
             synchronized(Main.visitedUrls) {
                 url = Main.visitedUrls.contains(nextUrl) ? null : nextUrl;
             }
             
-            if(url != null) {
-                //allowedByRobot = RobotReader.checkRobot(url);
-                                
-                if(!readRobotFiles.checkRobotFile(url)) {
+            if(url != null) {                                   // if url hasn't been visited before                                
+                if(!readRobotFiles.checkRobotFile(url)) {       // if not url is not allowed by robot file then move on to the next url
                     continue;
                 }
                 
-                else {
+                else {                                          // else go ahead with the url
                     //System.out.println("Allowed:" + RobotReader.allowedUrls);
                     //System.out.println("Disallowed:" + RobotReader.disallowedUrls);
                     extractUrls(url);
                 }
                 //Main.seedsList.forEach(System.out::println);
             }
-        //}
             
+            else {                                              // else url has been visited before
+                //System.out.println(Thread.currentThread().getName() + ": This url was visited before " + nextUrl);
+            }
+       
+            if(Main.visitedUrls.size() == 500 * stateCounter && stateCounter != 10) {
+                if(Thread.currentThread().getName().equals("C0")) {
+                    //System.out.println("Count of visited urls: " + Main.visitedUrls.size());
+
+                    System.out.println(Thread.currentThread().getName() + ": Saving state now ");
+
+                    Main.saveState(1);
+                    stateCounter++;                  
+                }
+            }
         }
     }
                 
-            
-        
-    
-                
-                
-                
-/*
-            while (!CrawlerController.isInterrupted) {
-                url = null;
-                //retrieved = false;
-                //allowedByRobot = false;
-
-                url = getNextUrl();
-
-                if (url != null) {                  // there is a url to visit
-                    System.out.println(Thread.currentThread().getName() + " Retrieved the following URL: " + url);
-                    extractUrls(url);
-                    //allowedByRobot = readRobotFiles.checkRobotFile(url);
-                    //System.out.println(allowedByRobot);
-
-                    //if (!allowedByRobot) {
-                    //}
-                }
-                //if (url != null && allowedByRobot) {
-
-                    //retrieved = getHTMLDocument(url);
-
-                //}*/
- 
-    
-
+                 
     public void extractUrls(String url) {
         Document htmlDocument = requestDocument(url);
         if(htmlDocument != null) {
@@ -222,9 +186,8 @@ public class Crawler implements Runnable {
                     System.out.println(Thread.currentThread().getName() + " extracted url: " + extractedURL);
                     //Main.visitedUrls.forEach(System.out::println);
                     Main.seedsList.add(extractedURL);   
-                    Main.visitedUrls.add(extractedURL);   
+                    //Main.visitedUrls.add(extractedURL);   
                     //.visitedUrls.size();
-                    System.out.println(Main.visitedUrls.size());
                 }
             }
         }
@@ -240,8 +203,8 @@ public class Crawler implements Runnable {
             String s = htmlDocument.body().text();
             String t = htmlDocument.title();
             
-            String compact = createCompactString(s);           
-        
+            //String compact = createCompactString(s);           
+            String compact = firstLetterWord(s);
             //System.out.println("Document title:" + t);
 
             //System.out.println("Document content:" + compact);
@@ -252,22 +215,24 @@ public class Crawler implements Runnable {
                 return null;
             }
             if(connection.response().statusCode() == 200) {
-                System.out.println("Recieved webpage at: " + url);
+                //System.out.println("Recieved webpage at: " + url);
 
                 synchronized(Main.compactString){
                     if(Main.compactString.contains(compact)) {
-                       System.out.println("Document at: " + url + " was visited before!");
+                       //System.out.println("Document at: " + url + " was visited before!");
                        return null; 
                     }
                     else {
                         Main.compactString.add(compact);   
+                        System.out.println("Compact string list: " + Main.compactString);
+
                     }
                 }
                                        
                 synchronized(Main.visitedUrls){
                     Main.visitedUrls.add(url);  
                     //Main.visitedUrlsCount++;
-                    System.out.println(Main.visitedUrls.size());
+                    System.out.println("Visited urls: " + Main.visitedUrls.size());
                 }
             }
             
@@ -300,7 +265,32 @@ public class Crawler implements Runnable {
         return compactString;
     }
     
-
+    static String firstLetterWord(String str)
+    {
+        String result = "";
+ 
+        // Traverse the string.
+        boolean v = true;
+        for (int i = 0; i < str.length(); i++)
+        {
+            // If it is space, set v as true.
+            if (str.charAt(i) == ' ')
+            {
+                v = true;
+            }
+             
+            // Else check if v is true or not.
+            // If true, copy character in output
+            // string and set v as false.
+            else if (str.charAt(i) != ' ' && v == true)
+            {
+                result += (str.charAt(i));
+                v = false;
+            }
+        }
+ 
+        return result;
+    }
 
     
     private String downloadPage(URL pageUrl) {
