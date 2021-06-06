@@ -9,8 +9,8 @@ public class Preprocessor {
 	
 	static String [] stopWords = new String[440];
 	
-	public static void prepareStopWords(String filename) throws FileNotFoundException {
-			File file =new File(filename);
+	public static void prepareStopWords() throws FileNotFoundException {
+			File file =new File("stop_words_array.txt");
 			Scanner sc = new Scanner(file);
 			int i=0;
 		    while (sc.hasNextLine()) {
@@ -23,10 +23,8 @@ public class Preprocessor {
 	static Boolean isStop(String word) {
 		for(int j= 0 ; j<stopWords.length ;j++) {
 			if( word.equals(stopWords[j])) {
-//				System.out.println(word + " " + stopWords[j]);
 				return true;
-			}
-				
+			}	
 	    }
 		return false;
 	}
@@ -50,10 +48,4 @@ public class Preprocessor {
 		}
 		return ""; 
 	}
-//	
-//	public static void main(String[] args) throws IOException {
-//		Preprocessor.prepareStopWords();
-//		Preprocessor.preprocess("smartphone");
-//	}
-
 }
